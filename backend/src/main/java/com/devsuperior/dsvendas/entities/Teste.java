@@ -11,30 +11,29 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_sales")
-public class Sale {
+@Table(name = "tb_teste")
+public class Teste {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Integer visited;
+	private String visited;
 	private Integer deals;
 	private Double amount;
 	private LocalDate date;
+	private String nome;
 
-	@ManyToOne
-	@JoinColumn(name = "seller_id")
-	private Seller seller;
-
-	public Sale() {
+	public Teste() {
 	}
 
-	public Sale(Long id, Integer visited, Integer deals, Double amount, LocalDate date) {
+	public Teste(Long id, String visited, Integer deals, Double amount, LocalDate date, String nome) {
+		super();
 		this.id = id;
 		this.visited = visited;
 		this.deals = deals;
 		this.amount = amount;
 		this.date = date;
+		this.nome = nome;
 	}
 
 	public Long getId() {
@@ -45,11 +44,11 @@ public class Sale {
 		this.id = id;
 	}
 
-	public Integer getVisited() {
+	public String getVisited() {
 		return visited;
 	}
 
-	public void setVisited(Integer visited) {
+	public void setVisited(String visited) {
 		this.visited = visited;
 	}
 
@@ -77,12 +76,12 @@ public class Sale {
 		this.date = date;
 	}
 
-	public Seller getSeller() {
-		return seller;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setSeller(Seller seller) {
-		this.seller = seller;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	@Override
@@ -101,7 +100,7 @@ public class Sale {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Sale other = (Sale) obj;
+		Teste other = (Teste) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
