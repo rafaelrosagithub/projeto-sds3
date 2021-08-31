@@ -48,8 +48,8 @@ public class TesteController {
 	}
 	
 	@GetMapping("/consultar-repository-impl")
-	public ResponseEntity<List<Teste>> consultarByRepositoryImpl(String nome, String visited) {
-		List<Teste> list = testeRepository.find(nome, visited);
+	public ResponseEntity<List<Teste>> consultarByRepositoryImpl(String nome, String visited, Pageable pageable) {
+		List<Teste> list = testeRepository.find(nome, visited, pageable);
 		return ResponseEntity.ok(list);
 	}
 

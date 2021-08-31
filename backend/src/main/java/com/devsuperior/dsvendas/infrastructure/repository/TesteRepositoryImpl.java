@@ -5,12 +5,14 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -24,7 +26,22 @@ public class TesteRepositoryImpl implements TesteRepositoryQueries {
 	private EntityManager manager;
 
 	@Override
-	public List<Teste> find(String nome, String visited) {
+	public List<Teste> find(String nome, String visited, Pageable pageable) {
+		
+
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("SELECT * FROM tb_teste etr1 ");
+		stringBuilder.append("join tb_teste etr2 on etr2.id = etr1.id ");
+		stringBuilder.append("where etr1.deals in (select deals from tb_teste etr group by deals) ");
+		stringBuilder.append("and etr1.date in (select MAX(etr.date) from tb_teste etr group by deals)");
+			
+							
+		
+		Query query =  manager.createNativeQuery(stringBuilder.toString(), Teste.class);
+		
+		List<Teste> lista = query.getResultList();
+		lista.stream().forEach(arr -> System.out.println("Teste: " + arr.getId() + " - " +  arr.getNome()));
+		return lista;
 
 //		var jpql = new StringBuilder();
 //
@@ -47,27 +64,27 @@ public class TesteRepositoryImpl implements TesteRepositoryQueries {
 //		
 //		return query.getResultList();
 		
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		
-		CriteriaQuery<Teste> criteria = builder.createQuery(Teste.class);
-		Root<Teste> root = criteria.from(Teste.class);
-		
-		var predicates = new ArrayList<Predicate>();
-		
-		if (StringUtils.hasText(nome)) {
-			predicates.add(builder.like(root.get("nome"), "%" + nome + "%"));
-		}
-		
-		if (StringUtils.hasLength(visited)) {
-			predicates.add(builder.greaterThanOrEqualTo(root.get("visited"), visited));
-		}
-		
-		criteria.where(predicates.toArray(new Predicate[0]));
-		
-		
-		TypedQuery<Teste> query = manager.createQuery(criteria);
-		
-		return query.getResultList();
+//		CriteriaBuilder builder = manager.getCriteriaBuilder();
+//		
+//		CriteriaQuery<Teste> criteria = builder.createQuery(Teste.class);
+//		Root<Teste> root = criteria.from(Teste.class);
+//		
+//		var predicates = new ArrayList<Predicate>();
+//		
+//		if (StringUtils.hasText(nome)) {
+//			predicates.add(builder.like(root.get("nome"), "%" + nome + "%"));
+//		}
+//		
+//		if (StringUtils.hasLength(visited)) {
+//			predicates.add(builder.greaterThanOrEqualTo(root.get("visited"), visited));
+//		}
+//		
+//		criteria.where(predicates.toArray(new Predicate[0]));
+//		
+//		
+//		TypedQuery<Teste> query = manager.createQuery(criteria);
+//		
+//		return query.getResultList();
 	}
 
 }
